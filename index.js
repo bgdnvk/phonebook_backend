@@ -2,8 +2,12 @@ const express = require('express')
 const morgan = require('morgan')
 
 
+
+
 const app = express()
 app.use(express.json())
+//adding build
+app.use(express.static('build'))
 
 const cors = require('cors')
 
