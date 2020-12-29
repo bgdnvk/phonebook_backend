@@ -1,5 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
+
+const Person = require('./models/person')
 
 
 
@@ -55,7 +58,10 @@ app.get('/', (request, response) => {
 
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  // response.json(persons)
+  Person.find({}).then(p => {
+    response.json(p)
+  })
 })
 
 app.get('/api/info', (req, res) => {
@@ -82,17 +88,18 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-    const maxId = persons.length > 0? Math.max(...persons.map(p => p.id)): 0
-    const person = req.body
-    person.id = maxId +1
+    // const maxId = persons.length > 0? Math.max(...persons.map(p => p.id)): 0
+    const body = req.body
+    // person.id = maxId +1
     // console.log(person);
     // console.log(person.id);
 
-    checkName = (name) => {
-        return persons.find(e => e.name === name)
-    }
+    //checks local arr
+    // checkName = (name) => {
+    //     return persons.find(e => e.name === name)
+    // }
 
-    if(!person.name || !person.number){
+    if(!body.name || !body.number){
         return res.status(400).json(
             {
                 error: 'missing data'
@@ -100,14 +107,23 @@ app.post('/api/persons', (req, res) => {
         )
     }
 
-    if (checkName(person.name)) {
-        return res.status(400).json({ 
-          error: 'name must be unique'
-        })
-      }
+    const person = new Person({
+      name: body.name,
+      number: body.number
+    })
 
-    persons = persons.concat(person)
-    res.json(person)
+    // if (checkName(person.name)) {
+    //     return res.status(400).json({ 
+    //       error: 'name must be unique'
+    //     })
+    //   }
+    //adding to arr
+    // persons = persons.concat(person)
+
+    // res.json(person)
+    person.save().then(savedP => {
+      res.json(savedP)
+    })
 })
 
 // const PORT = 3001
@@ -120,7 +136,8 @@ app.post('/api/persons', (req, res) => {
 // app.listen(3001, () => {
 //   console.log(`Server running on port ${PORT}`);
 // });
-const PORT = process.env.PORT || 3001
+// const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
