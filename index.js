@@ -46,7 +46,8 @@ app.get('/api/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-    const id = Number(req.params.id);
+    // const id = Number(req.params.id);
+    const id = req.params.id
     Person.findById(id)
       .then(person => {
         if (person) {
@@ -59,9 +60,12 @@ app.get('/api/persons/:id', (req, res, next) => {
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-    const id = Number(req.params.id)
+    // const id = Number(req.params.id)
+    const id = req.params.id
+    console.log(id);
     Person.findByIdAndRemove(id)
       .then(result => {
+        console.log('deleting', result);
         res.status(204).end()
       })
       .catch(e => next(e))
