@@ -46,65 +46,65 @@ app.get('/api/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-    // const id = Number(req.params.id);
-    const id = req.params.id
-    Person.findById(id)
-      .then(person => {
-        if (person) {
-          res.json(person)
-        } else {
-          res.status(404).end()
-        }
-      })
-      .catch(e => next(e))
+  // const id = Number(req.params.id);
+  const id = req.params.id
+  Person.findById(id)
+    .then(person => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(e => next(e))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-    // const id = Number(req.params.id)
-    const id = req.params.id
-    console.log(id);
-    Person.findByIdAndRemove(id)
-      .then(result => {
-        console.log('deleting', result);
-        res.status(204).end()
-      })
-      .catch(e => next(e))
+  // const id = Number(req.params.id)
+  const id = req.params.id
+  console.log(id)
+  Person.findByIdAndRemove(id)
+    .then(result => {
+      console.log('deleting', result)
+      res.status(204).end()
+    })
+    .catch(e => next(e))
 
 
 })
 
 app.post('/api/persons', (req, res, next) => {
-    const body = req.body
-    // if(!body.name || !body.number){
-    //     return res.status(400).json(
-    //         {
-    //             error: 'missing data'
-    //         }
-    //     )
-    // }
-    if (body.name === undefined) {
-      return res.status(400).json({
-        error: 'name missing'
-      })
-    }
-  
-    if (body.number === undefined) {
-      return res.status(400).json({
-        error: 'number missing'
-      })
-    }
-
-    const person = new Person({
-      name: body.name,
-      number: body.number
+  const body = req.body
+  // if(!body.name || !body.number){
+  //     return res.status(400).json(
+  //         {
+  //             error: 'missing data'
+  //         }
+  //     )
+  // }
+  if (body.name === undefined) {
+    return res.status(400).json({
+      error: 'name missing'
     })
-    //promise chain clearing
-    // person.save()
-    //   .then(savedP => {
-    //   res.json(savedP)
-    // })
-    //   .catch(e => next(e))
-    person
+  }
+
+  if (body.number === undefined) {
+    return res.status(400).json({
+      error: 'number missing'
+    })
+  }
+
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  })
+  //promise chain clearing
+  // person.save()
+  //   .then(savedP => {
+  //   res.json(savedP)
+  // })
+  //   .catch(e => next(e))
+  person
     .save()
     .then( savedP => savedP.toJSON())
     .then( savedAndFormattedP => {
@@ -142,7 +142,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })  
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
